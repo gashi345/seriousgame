@@ -1,266 +1,188 @@
-
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Serious Game - Diagnostic de service</title>
 <style>
+:root{
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --color-text-primary:#111827;
+}
+
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans);color:var(--color-text-primary)}
-.sg{max-width:960px;margin:0 auto;padding:1.5rem 12px 2rem}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-sans);
+  color:var(--color-text-primary);
+  background:#050510;
+  overflow-x:hidden;
+}
+button{font-family:inherit;-webkit-tap-highlight-color:transparent}
+.sg{width:100%;max-width:960px;margin:0 auto;padding:1.5rem 12px 2rem}
 
 .hero{border-radius:22px;padding:26px 28px 22px;margin-bottom:1.2rem;background:#1A0033;position:relative;overflow:hidden}
-.hero-tag{display:inline-block;background:rgba(255,255,255,0.12);color:#E879F9;font-size:10px;font-weight:500;padding:4px 12px;border-radius:20px;margin-bottom:12px;letter-spacing:1px}
-.hero-title{font-size:23px;font-weight:500;color:#fff;margin-bottom:8px;line-height:1.3}
-.hero-desc{font-size:13px;color:rgba(255,255,255,0.7);line-height:1.65;margin-bottom:16px}
+.hero-tag{display:inline-block;background:rgba(255,255,255,0.12);color:#E879F9;font-size:10px;font-weight:600;padding:4px 12px;border-radius:20px;margin-bottom:12px;letter-spacing:1px}
+.hero-title{font-size:clamp(20px,4vw,26px);font-weight:650;color:#fff;margin-bottom:8px;line-height:1.3}
+.hero-desc{font-size:13px;color:rgba(255,255,255,0.75);line-height:1.65;margin-bottom:16px}
 .objs{display:grid;grid-template-columns:repeat(auto-fit,minmax(172px,1fr));gap:8px}
 .obj{border-radius:12px;padding:10px 13px}
-.obj-num{font-size:10px;font-weight:500;letter-spacing:0.5px;margin-bottom:3px}
-.obj-txt{font-size:11.5px;line-height:1.45;color:rgba(255,255,255,0.88)}
+.obj-num{font-size:10px;font-weight:650;letter-spacing:0.5px;margin-bottom:3px}
+.obj-txt{font-size:11.5px;line-height:1.45;color:rgba(255,255,255,0.9)}
 
 .metho{border-radius:22px;padding:20px 22px;margin-bottom:1.2rem;background:#0A0A1A}
-.metho-title{font-size:14px;font-weight:500;color:#fff;margin-bottom:14px;letter-spacing:0.3px}
+.metho-title{font-size:14px;font-weight:650;color:#fff;margin-bottom:14px;letter-spacing:0.3px}
 .metho-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px}
 .mstep{border-radius:14px;padding:13px 14px;position:relative;overflow:hidden}
-.mstep-num{font-size:28px;font-weight:500;line-height:1;margin-bottom:6px;opacity:0.35}
-.mstep-time{font-size:11px;font-weight:500;letter-spacing:0.5px;margin-bottom:4px}
-.mstep-label{font-size:13px;font-weight:500;margin-bottom:4px}
+.mstep-num{font-size:28px;font-weight:650;line-height:1;margin-bottom:6px;opacity:0.35}
+.mstep-time{font-size:11px;font-weight:650;letter-spacing:0.5px;margin-bottom:4px}
+.mstep-label{font-size:13px;font-weight:650;margin-bottom:4px}
 .mstep-desc{font-size:11px;line-height:1.5;opacity:0.8}
 
 .scenario{border-radius:16px;padding:14px 18px;margin-bottom:1.2rem;font-size:13px;line-height:1.65;border:1.5px solid #7C3AED;background:#0D001A;color:rgba(255,255,255,0.78)}
-.scenario b{color:#E879F9;font-weight:500}
+.scenario b{color:#E879F9;font-weight:650}
 
 .controls{display:flex;gap:10px;margin-bottom:1rem}
-.btn-main{flex:1;padding:13px;font-size:15px;font-weight:500;cursor:pointer;border-radius:14px;border:2px solid #7C3AED;color:#E879F9;background:#0D001A;letter-spacing:0.1px;transition:background 0.15s}
+.btn-main{flex:1;padding:13px;font-size:15px;font-weight:650;cursor:pointer;border-radius:14px;border:2px solid #7C3AED;color:#E879F9;background:#0D001A;letter-spacing:0.1px;transition:background 0.15s, transform 0.15s}
 .btn-main:hover{background:#1A0033}
-.btn-main:disabled{opacity:0.25;cursor:default}
-.btn-sec{padding:13px 16px;font-size:13px;cursor:pointer;border-radius:14px;background:transparent;border:1px solid #444;color:#aaa}
+.btn-main:active{transform:scale(.99)}
+.btn-main:disabled{opacity:0.25;cursor:not-allowed}
+.btn-sec{padding:13px 16px;font-size:13px;cursor:pointer;border-radius:14px;background:transparent;border:1px solid #444;color:#aaa;transition:background .15s}
 .btn-sec:hover{background:#111}
 
-.status{border-radius:12px;padding:11px 16px;margin-bottom:1.2rem;font-size:13px;text-align:center;min-height:42px;display:flex;align-items:center;justify-content:center;border:1px solid #333;background:#111;color:#888;line-height:1.5;transition:all 0.25s}
-.status.lit{background:#1A0033;border-color:#7C3AED;color:#E879F9;font-weight:500}
+.status{border-radius:12px;padding:11px 16px;margin-bottom:1.2rem;font-size:13px;text-align:center;min-height:42px;display:flex;align-items:center;justify-content:center;border:1px solid #333;background:#111;color:#aaa;line-height:1.5;transition:all 0.25s}
+.status.lit{background:#1A0033;border-color:#7C3AED;color:#E879F9;font-weight:650}
 
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(188px,1fr));gap:14px;margin-bottom:1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-bottom:1rem}
 
-.cw{perspective:1100px;min-height:330px}
-.ci{position:relative;width:100%;min-height:330px;transform-style:preserve-3d;transition:transform 0.7s cubic-bezier(0.34,1.1,0.64,1)}
+.cw{perspective:1100px;min-height:520px}
+.ci{position:relative;width:100%;min-height:520px;transform-style:preserve-3d;transition:transform 0.7s cubic-bezier(0.34,1.1,0.64,1);cursor:pointer}
 .ci.fl{transform:rotateY(180deg)}
-.face{position:absolute;top:0;left:0;width:100%;min-height:330px;backface-visibility:hidden;border-radius:20px;overflow:hidden}
+.face{position:absolute;inset:0;width:100%;min-height:520px;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:20px;overflow:hidden}
 .fback{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:4px;cursor:pointer}
 .fback-bar{width:34px;height:5px;border-radius:3px;opacity:0.2;margin-bottom:6px}
-.fback-num{font-size:74px;font-weight:500;line-height:0.9}
-.fback-lbl{font-size:11px;letter-spacing:0.5px;opacity:0.5;margin-top:8px}
-.ffront{transform:rotateY(180deg);display:flex;flex-direction:column;padding:14px 13px 12px}
-.ff-badge{font-size:9.5px;font-weight:500;padding:3px 10px;border-radius:20px;margin-bottom:9px;align-self:flex-start;letter-spacing:0.4px;flex-shrink:0}
-.ff-name{font-size:15px;font-weight:500;margin-bottom:2px;line-height:1.25}
-.ff-role{font-size:11px;opacity:0.55;margin-bottom:10px;font-style:italic}
+.fback-num{font-size:74px;font-weight:650;line-height:0.9}
+.fback-lbl{font-size:11px;letter-spacing:0.5px;opacity:0.55;margin-top:8px;text-align:center}
+.ffront{transform:rotateY(180deg);display:flex;flex-direction:column;padding:14px 13px 12px;overflow:auto}
+.ff-badge{font-size:9.5px;font-weight:650;padding:3px 10px;border-radius:20px;margin-bottom:9px;align-self:flex-start;letter-spacing:0.4px;flex-shrink:0}
+.ff-name{font-size:16px;font-weight:750;margin-bottom:2px;line-height:1.25}
+.ff-role{font-size:11.5px;opacity:0.7;margin-bottom:10px;font-style:italic}
 .accordion{width:100%;margin-top:2px}
-.acc-item{border-radius:10px;margin-bottom:5px;overflow:hidden}
-.acc-hdr{width:100%;padding:7px 10px;font-size:10.5px;font-weight:500;cursor:pointer;text-align:left;border:none;display:flex;align-items:center;justify-content:space-between;letter-spacing:0.2px}
+.acc-item{border-radius:10px;margin-bottom:6px;overflow:hidden}
+.acc-hdr{width:100%;padding:8px 10px;font-size:10.8px;font-weight:700;cursor:pointer;text-align:left;border:none;display:flex;align-items:center;justify-content:space-between;letter-spacing:0.2px}
 .acc-arrow{font-size:10px;transition:transform 0.2s;flex-shrink:0;margin-left:4px}
 .acc-arrow.open{transform:rotate(180deg)}
-.acc-body{display:none;padding:8px 10px;font-size:10.5px;line-height:1.55}
-.acc-body.show{display:block}
-.acc-body ul{padding-left:13px}
+.acc-body{display:block;padding:8px 10px;font-size:10.8px;line-height:1.55}
+.acc-body.hide{display:none}
+.acc-body ul{padding-left:14px}
 .acc-body ul li{margin-bottom:3px}
-.punchline{font-size:10.5px;font-style:italic;margin-top:9px;padding:7px 10px;border-radius:10px;line-height:1.45}
-.ff-photo{font-size:9.5px;margin-top:8px;padding-top:7px;border-top:0.5px solid rgba(255,255,255,0.08);opacity:0.35;letter-spacing:0.3px}
+.punchline{font-size:10.8px;font-style:italic;margin-top:9px;padding:8px 10px;border-radius:10px;line-height:1.45}
+.ff-photo{font-size:9.5px;margin-top:8px;padding-top:7px;border-top:0.5px solid rgba(0,0,0,0.08);opacity:0.55;letter-spacing:0.3px}
 
 .cw.s-active .fback{box-shadow:0 0 0 4px #E879F9}
-.cw.s-drawn .fback{opacity:0.2}
-.footer-count{font-size:12px;color:#666;text-align:center;margin-top:4px}
+.cw.s-drawn .fback{opacity:0.35}
+.footer-count{font-size:12px;color:#aaa;text-align:center;margin-top:8px}
+
+@media(max-width:640px){
+  .sg{padding:10px 10px 24px}
+  .hero{padding:20px 18px}
+  .metho{padding:18px 16px}
+  .controls{flex-direction:column}
+  .btn-main,.btn-sec{width:100%}
+  .grid{grid-template-columns:1fr;gap:16px}
+  .cw,.ci,.face{min-height:540px}
+}
 </style>
-
+</head>
+<body>
 <div class="sg">
-
-<div class="hero">
-  <div class="hero-tag">SERIOUS GAME · MODULE 3 · COMPÉTENCES EN SITUATION</div>
-  <div class="hero-title">Le diagnostic de service — 15 rôles, 30 minutes, une réunion qui ne se passe pas comme prévu</div>
-  <div class="hero-desc">Ce jeu met en scène un diagnostic de compétences dans un contexte de changement. Vous vivez de l'intérieur ce que vous gérerez dans votre service : des résistances, des silences, des talents cachés, des enjeux non dits. Tout ce que vous ressentez ici est pédagogique.</div>
-  <div class="objs">
-    <div class="obj" style="background:rgba(124,58,237,0.25)"><div class="obj-num" style="color:#A78BFA">OBJECTIF 1</div><div class="obj-txt">Observer les compétences en situation réelle, pas sur une fiche</div></div>
-    <div class="obj" style="background:rgba(236,72,153,0.2)"><div class="obj-num" style="color:#F9A8D4">OBJECTIF 2</div><div class="obj-txt">Adapter sa posture managériale selon chaque profil</div></div>
-    <div class="obj" style="background:rgba(234,179,8,0.18)"><div class="obj-num" style="color:#FDE68A">OBJECTIF 3</div><div class="obj-txt">Identifier les leviers de développement face aux réfractaires</div></div>
-    <div class="obj" style="background:rgba(16,185,129,0.18)"><div class="obj-num" style="color:#6EE7B7">OBJECTIF 4</div><div class="obj-txt">Construire un plan collectif crédible sous contrainte et tension</div></div>
-  </div>
-</div>
-
-<div class="metho">
-  <div class="metho-title">Méthodologie du jeu — 45 minutes</div>
-  <div class="metho-steps">
-    <div class="mstep" style="background:#1A0033;border:1.5px solid #7C3AED">
-      <div class="mstep-num" style="color:#A78BFA">01</div>
-      <div class="mstep-time" style="color:#A78BFA">TIRAGE · 5 MIN</div>
-      <div class="mstep-label" style="color:#fff">Distribution des rôles</div>
-      <div class="mstep-desc" style="color:rgba(255,255,255,0.65)">Chaque participant tire sa carte, la retourne et prend 5 min pour lire son contexte, ses compétences et ses 5 étapes de préparation. Prenez une photo.</div>
-    </div>
-    <div class="mstep" style="background:#001A1A;border:1.5px solid #06B6D4">
-      <div class="mstep-num" style="color:#67E8F9">02</div>
-      <div class="mstep-time" style="color:#67E8F9">PRÉPARATION · 5 MIN</div>
-      <div class="mstep-label" style="color:#fff">Préparer son personnage</div>
-      <div class="mstep-desc" style="color:rgba(255,255,255,0.65)">Silence individuel. Entrez dans votre rôle. Lisez les 3 accordéons. Notez une punchline, un comportement clé et une intention pour la réunion.</div>
-    </div>
-    <div class="mstep" style="background:#1A1000;border:1.5px solid #F59E0B">
-      <div class="mstep-num" style="color:#FCD34D">03</div>
-      <div class="mstep-time" style="color:#FCD34D">SIMULATION · 20 MIN</div>
-      <div class="mstep-label" style="color:#fff">La réunion collective</div>
-      <div class="mstep-desc" style="color:rgba(255,255,255,0.65)">Le N+1 anime. Chacun joue son rôle. Pas de sur-jeu — soyez réaliste. La N+2 passe après 10 min. Objectif : produire un plan collectif.</div>
-    </div>
-    <div class="mstep" style="background:#001A08;border:1.5px solid #10B981">
-      <div class="mstep-num" style="color:#6EE7B7">04</div>
-      <div class="mstep-time" style="color:#6EE7B7">ARRÊT · 5 MIN</div>
-      <div class="mstep-label" style="color:#fff">Sortir du jeu</div>
-      <div class="mstep-desc" style="color:rgba(255,255,255,0.65)">Stop. Chacun sort de son rôle. Note silencieusement : une chose que le manager a bien faite, une chose à améliorer, ce qu'il a ressenti.</div>
-    </div>
-    <div class="mstep" style="background:#1A000A;border:1.5px solid #EC4899">
-      <div class="mstep-num" style="color:#F9A8D4">05</div>
-      <div class="mstep-time" style="color:#F9A8D4">RESTITUTION · 15 MIN</div>
-      <div class="mstep-label" style="color:#fff">Débriefing collectif</div>
-      <div class="mstep-desc" style="color:rgba(255,255,255,0.65)">Le manager parle en premier. Puis Théo le nouveau. Puis les résistants. Questions : qu'avez-vous observé sur les compétences ? Quel levier de développement auriez-vous activé ?</div>
+  <div class="hero">
+    <div class="hero-tag">SERIOUS GAME · MODULE 3 · COMPÉTENCES EN SITUATION</div>
+    <div class="hero-title">Le diagnostic de service — 15 rôles, 30 minutes, une réunion qui ne se passe pas comme prévu</div>
+    <div class="hero-desc">Ce jeu met en scène un diagnostic de compétences dans un contexte de changement. Vous vivez de l'intérieur ce que vous gérerez dans votre service : des résistances, des silences, des talents cachés, des enjeux non dits. Tout ce que vous ressentez ici est pédagogique.</div>
+    <div class="objs">
+      <div class="obj" style="background:rgba(124,58,237,0.25)"><div class="obj-num" style="color:#A78BFA">OBJECTIF 1</div><div class="obj-txt">Observer les compétences en situation réelle, pas sur une fiche</div></div>
+      <div class="obj" style="background:rgba(236,72,153,0.2)"><div class="obj-num" style="color:#F9A8D4">OBJECTIF 2</div><div class="obj-txt">Adapter sa posture managériale selon chaque profil</div></div>
+      <div class="obj" style="background:rgba(234,179,8,0.18)"><div class="obj-num" style="color:#FDE68A">OBJECTIF 3</div><div class="obj-txt">Identifier les leviers de développement face aux réfractaires</div></div>
+      <div class="obj" style="background:rgba(16,185,129,0.18)"><div class="obj-num" style="color:#6EE7B7">OBJECTIF 4</div><div class="obj-txt">Construire un plan collectif crédible sous contrainte et tension</div></div>
     </div>
   </div>
-</div>
 
-<div class="scenario">
-  <b>Contexte :</b> Bureau des politiques RH d'une préfecture régionale. La directrice vient d'annoncer une réorganisation : fusion de deux unités et déploiement d'un nouvel outil numérique dans 6 semaines. Elle demande un plan de développement des compétences. <b>Vous avez 20 minutes de réunion.</b> Le N+2 passera valider. Objectif collectif : un plan accepté par tous. Mais rien ne va se passer comme prévu.
-</div>
+  <div class="metho">
+    <div class="metho-title">Méthodologie du jeu — 45 minutes</div>
+    <div class="metho-steps">
+      <div class="mstep" style="background:#1A0033;border:1.5px solid #7C3AED"><div class="mstep-num" style="color:#A78BFA">01</div><div class="mstep-time" style="color:#A78BFA">TIRAGE · 5 MIN</div><div class="mstep-label" style="color:#fff">Distribution des rôles</div><div class="mstep-desc" style="color:rgba(255,255,255,0.65)">Chaque participant tire sa carte, la retourne et prend 5 min pour lire son contexte, ses compétences et ses 5 étapes de préparation. Prenez une photo.</div></div>
+      <div class="mstep" style="background:#001A1A;border:1.5px solid #06B6D4"><div class="mstep-num" style="color:#67E8F9">02</div><div class="mstep-time" style="color:#67E8F9">PRÉPARATION · 5 MIN</div><div class="mstep-label" style="color:#fff">Préparer son personnage</div><div class="mstep-desc" style="color:rgba(255,255,255,0.65)">Silence individuel. Entrez dans votre rôle. Lisez les 3 accordéons. Notez une punchline, un comportement clé et une intention pour la réunion.</div></div>
+      <div class="mstep" style="background:#1A1000;border:1.5px solid #F59E0B"><div class="mstep-num" style="color:#FCD34D">03</div><div class="mstep-time" style="color:#FCD34D">SIMULATION · 20 MIN</div><div class="mstep-label" style="color:#fff">La réunion collective</div><div class="mstep-desc" style="color:rgba(255,255,255,0.65)">Le N+1 anime. Chacun joue son rôle. Pas de sur-jeu — soyez réaliste. La N+2 passe après 10 min. Objectif : produire un plan collectif.</div></div>
+      <div class="mstep" style="background:#001A08;border:1.5px solid #10B981"><div class="mstep-num" style="color:#6EE7B7">04</div><div class="mstep-time" style="color:#6EE7B7">ARRÊT · 5 MIN</div><div class="mstep-label" style="color:#fff">Sortir du jeu</div><div class="mstep-desc" style="color:rgba(255,255,255,0.65)">Stop. Chacun sort de son rôle. Note silencieusement : une chose que le manager a bien faite, une chose à améliorer, ce qu'il a ressenti.</div></div>
+      <div class="mstep" style="background:#1A000A;border:1.5px solid #EC4899"><div class="mstep-num" style="color:#F9A8D4">05</div><div class="mstep-time" style="color:#F9A8D4">RESTITUTION · 15 MIN</div><div class="mstep-label" style="color:#fff">Débriefing collectif</div><div class="mstep-desc" style="color:rgba(255,255,255,0.65)">Le manager parle en premier. Puis Théo le nouveau. Puis les résistants. Questions : qu'avez-vous observé sur les compétences ? Quel levier de développement auriez-vous activé ?</div></div>
+    </div>
+  </div>
 
-<div class="status" id="st">Appuyez pour distribuer les rôles un par un</div>
-<div class="controls">
-  <button class="btn-main" id="db" onclick="drawNext()">Distribuer le prochain rôle ↗</button>
-  <button class="btn-sec" onclick="reset()">↺ Nouveau tirage</button>
-</div>
-<div class="grid" id="grid"></div>
-<div class="footer-count" id="ft"></div>
+  <div class="scenario"><b>Contexte :</b> Bureau des politiques RH d'une préfecture régionale. La directrice vient d'annoncer une réorganisation : fusion de deux unités et déploiement d'un nouvel outil numérique dans 6 semaines. Elle demande un plan de développement des compétences. <b>Vous avez 20 minutes de réunion.</b> Le N+2 passera valider. Objectif collectif : un plan accepté par tous. Mais rien ne va se passer comme prévu.</div>
+
+  <div class="status" id="st">Appuyez pour distribuer les rôles un par un</div>
+  <div class="controls">
+    <button class="btn-main" id="db" type="button" onclick="drawNext()">Distribuer le prochain rôle ↗</button>
+    <button class="btn-sec" type="button" onclick="newDraw()">↺ Nouveau tirage</button>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="footer-count" id="ft"></div>
 </div>
 
 <script>
 const CARDS=[
-  {badge:"N+2 — Direction",name:"La directrice générale",role:"Passage éclair — validation du plan",
-   col:"#1A0033",nc:"#E879F9",hc:"#C084FC",fb:"#F5F0FF",fn:"#4C1D95",fbb:"#DDD6FE",fbc:"#4C1D95",fbo:"#2E1065",fbor:"#A78BFA",pbg:"#EDE9FE",
-   ctx:"Vous n'étiez pas censée être là. Vous passez en coup de vent — réunion dans 20 min. Vous posez deux ou trois questions stratégiques sur les livrables et les délais, pas les méthodes. Votre passage suffit à changer toute la dynamique.",
-   comps:["Pilotage stratégique et vision d'ensemble","Prise de décision sous pression temporelle","Communication d'autorité ascendante","Lecture rapide des dynamiques collectives"],
-   prep:["1. Adoptez une posture de décideuse pressée — vous n'êtes pas là pour débattre","2. Posez des questions sur les livrables et les risques, jamais sur les méthodes","3. Si le plan est flou, exprimez votre impatience calmement : 'Je repasserai'","4. Valorisez une initiative concrète si vous en entendez une — votre validation compte triple","5. Partez au bout de 5 minutes max — votre absence crée autant d'effet que votre présence"],
-   punch:"« Je vous laisse continuer. J'attends un plan concret, pas des intentions. »"},
-  {badge:"N+1 — Animateur",name:"Le chef de service",role:"Il anime et porte la responsabilité du plan",
-   col:"#0D001A",nc:"#C084FC",hc:"#A78BFA",fb:"#F5F0FF",fn:"#4C1D95",fbb:"#DDD6FE",fbc:"#4C1D95",fbo:"#2E1065",fbor:"#7C3AED",pbg:"#EDE9FE",
-   ctx:"La directrice vous a glissé en privé que deux agents ont déjà contacté les syndicats. Vous ne pouvez pas le dire. Mais ça change tout dans votre façon de gérer la réunion. Mission : faire émerger un plan sans que ça explose.",
-   comps:["Animation de réunion sous tension","Écoute active et reformulation","Gestion des conflits et arbitrage","Posture managériale sous pression hiérarchique"],
-   prep:["1. Préparez une ouverture qui pose le cadre sans braquer : pourquoi cette réunion, quel livrable","2. Identifiez mentalement les profils résistants — anticipez comment les inclure sans les écraser","3. Reformulez chaque tension en question ouverte pour ne jamais prendre parti frontalement","4. Si ça dérape, proposez un vote ou un sous-groupe — reprenez la main sans imposer","5. Concluez sur un engagement minimal mais collectif — même petit, il vaut plus qu'un grand plan rejeté"],
-   punch:"« Je vous entends tous. Maintenant j'ai besoin que vous m'aidiez à construire quelque chose. »"},
-  {badge:"Résistance ouverte",name:"Patrick",role:"22 ans de service, mémoire des réorgs",
-   col:"#1A0000",nc:"#FCA5A5",hc:"#F87171",fb:"#FFF0F0",fn:"#7F1D1D",fbb:"#FECACA",fbc:"#7F1D1D",fbo:"#450A0A",fbor:"#F87171",pbg:"#FEE2E2",
-   ctx:"Vous avez vécu 4 réorganisations. Chaque fois on vous a promis mieux. Chaque fois c'était plus de travail pour le même salaire. Vous êtes épuisé — pas violent. Et ça se voit dans chaque soupir.",
-   comps:["Mémoire institutionnelle précieuse et non valorisée","Expertise procédurale solide","Résistance au changement non accompagné","Besoin critique de reconnaissance non satisfait"],
-   prep:["1. Bras croisés dès le début — posture physique qui dit tout sans parler","2. Citez une réorg passée dès que quelqu'un est optimiste : ancrez dans le réel","3. Interrompez Kevin quand il parle des avantages de l'outil — soupir audible","4. Ne haussez jamais le ton — soyez juste lourd, lent, épuisant","5. Si le manager vous écoute vraiment et nomme votre expérience, desserrez les bras"],
-   punch:"« On a déjà essayé ça en 2018. Vous étiez où, vous, en 2018 ? »"},
-  {badge:"Méfiance froide",name:"Corinne",role:"Elle flaire la réduction de postes derrière",
-   col:"#1A0D00",nc:"#FCD34D",hc:"#FBBF24",fb:"#FFFBEB",fn:"#78350F",fbb:"#FDE68A",fbc:"#78350F",fbo:"#451A03",fbor:"#FBBF24",pbg:"#FEF3C7",
-   ctx:"Vous avez lu entre les lignes : 'optimisation des ressources' est le code pour 'moins d'agents'. Vous n'en êtes pas certaine. Mais toutes vos questions visent à faire confirmer ça. Vous prenez des notes ostensiblement.",
-   comps:["Analyse politique fine des décisions","Lecture stratégique des signaux faibles","Méfiance structurelle comme mécanisme de survie","Capacité à créer de l'inconfort sans se mettre en danger"],
-   prep:["1. Sortez un carnet et prenez des notes visibles dès le début de la réunion","2. Toutes vos questions portent sur les budgets, effectifs, intitulés de poste — rien d'autre","3. Ne vous laissez rassurer par aucune réponse vague — demandez des chiffres","4. Si on vous donne une réponse claire et documentée, détendez-vous légèrement","5. Terminez en demandant un document écrit avant tout engagement de votre part"],
-   punch:"« Quand vous dites 'mutualisation des missions', ça veut dire combien de postes en moins ? »"},
-  {badge:"Enthousiaste décalé",name:"Kevin",role:"Expert numérique, intelligence sociale zéro",
-   col:"#08001A",nc:"#818CF8",hc:"#6366F1",fb:"#EEF2FF",fn:"#1E1B4B",fbb:"#C7D2FE",fbc:"#1E1B4B",fbo:"#1E1B4B",fbor:"#6366F1",pbg:"#E0E7FF",
-   ctx:"Vous avez testé l'outil en bêta ce week-end. Il est excellent. Vous ne comprenez pas les résistances. Vous êtes la personne la plus compétente sur ce sujet dans la salle — et la moins écoutée.",
-   comps:["Expertise technique avancée et autonome","Apprentissage rapide des outils numériques","Faible lecture émotionnelle du groupe","Communication inadaptée au contexte de changement"],
-   prep:["1. Intervenez souvent, trop vite, avec trop de détails — commencez par 'non mais en fait'","2. Regardez Patrick avec incompréhension sincère quand il résiste","3. Proposez des solutions brillantes mais irréalistes pour les autres","4. Ne réalisez pas que vous agacez — vous êtes de parfaite bonne foi","5. Si le manager vous donne une mission concrète à votre niveau, devenez immédiatement très efficace"],
-   punch:"« Franchement c'est hyper intuitif, j'ai mis 20 minutes ce week-end à tout comprendre. »"},
-  {badge:"Loyauté à bout",name:"Nadia",role:"La fiable qui absorbe tout depuis 3 ans",
-   col:"#001A0D",nc:"#6EE7B7",hc:"#34D399",fb:"#ECFDF5",fn:"#064E3B",fbb:"#A7F3D0",fbc:"#064E3B",fbo:"#022C22",fbor:"#34D399",pbg:"#D1FAE5",
-   ctx:"Vous gérez déjà la charge de deux collègues absents depuis 4 mois. Vous n'avez jamais dit non. Si on vous affecte encore quelque chose aujourd'hui vous allez craquer — discrètement. Vous souriez encore. Pour l'instant.",
-   comps:["Fiabilité et engagement extrêmement élevés","Polyvalence opérationnelle rare","Incapacité à poser des limites professionnelles","Risque majeur d'épuisement professionnel non signalé"],
-   prep:["1. Acceptez tout ce qu'on vous propose avec un sourire sincère et chaleureux","2. Dites 'je vais trouver' et 'ça ira' à chaque sollicitation sans exception","3. Au moment le plus chargé de la réunion, lâchez une seule phrase vraie — sans cri","4. Laissez le silence s'installer après — ne remplissez pas vous-même le vide","5. Si le manager revient vers vous avec attention et empathie, vous pouvez aller plus loin"],
-   punch:"« Je vais faire comme d'habitude. (silence) Je ne sais juste plus quoi enlever. »"},
-  {badge:"Déléguée syndicale",name:"Isabelle",role:"Gardienne de la procédure, alliée potentielle",
-   col:"#001A00",nc:"#86EFAC",hc:"#4ADE80",fb:"#F0FDF4",fn:"#14532D",fbb:"#BBF7D0",fbc:"#14532D",fbo:"#052E16",fbor:"#4ADE80",pbg:"#DCFCE7",
-   ctx:"Vous avez votre carnet et une liste de questions issues du CSA. Vous n'êtes pas contre le changement — mais la procédure doit être respectée. Vous avez lu le CGFP et vous savez que cette réorg aurait dû passer en instance.",
-   comps:["Connaissance approfondie du droit social FP","Représentation collective légitime et reconnue","Rigueur procédurale non négociable","Capacité à bloquer ou débloquer selon la posture du manager"],
-   prep:["1. Référencez les textes concrètement : CGFP, décrets, art. L.251-1 et suivants","2. Demandez systématiquement si le CSA a été saisi et si un PV existe","3. Corrigez poliment mais fermement toute approximation juridique — carnet en main","4. Si le manager respecte la procédure, soutenez-le ouvertement : vous n'êtes pas un obstacle","5. Terminez en proposant de co-rédiger une partie du plan — c'est votre mode de coopération"],
-   punch:"« Je note, parce que si la procédure n'a pas été respectée, cette décision sera fragile au TA. »"},
-  {badge:"Rumeur active",name:"Sandra",role:"Colporte une info non vérifiée sur l'IA",
-   col:"#1A0D00",nc:"#FB923C",hc:"#F97316",fb:"#FFF7ED",fn:"#7C2D12",fbb:"#FED7AA",fbc:"#7C2D12",fbo:"#431407",fbor:"#F97316",pbg:"#FFEDD5",
-   ctx:"Vous avez entendu dans les couloirs que l'outil numérique intègre une IA qui va automatiser une partie des missions. Vous ne savez pas si c'est vrai. Vous avez décidé de le glisser dans la réunion quand même.",
-   comps:["Réseau informel très développé","Diffusion rapide de l'information non filtrée","Absence de vérification des sources","Impact sur le climat collectif non mesuré par soi-même"],
-   prep:["1. Utilisez le conditionnel et le 'il paraît que' — jamais de certitude","2. Ne citez jamais votre source — esquivez si on vous le demande","3. Observez les réactions : votre rôle est de créer de l'incertitude mesurée","4. Si le manager répond avec des faits précis, reculez gracieusement","5. Relancez la rumeur différemment 5 minutes plus tard si l'effet s'est dissipé"],
-   punch:"« J'espère me tromper mais il paraît que l'outil va automatiser une partie de nos postes... »"},
-  {badge:"Départ imminent",name:"Julie",role:"Sa mutation est signée, personne ne le sait",
-   col:"#1A001A",nc:"#F0ABFC",hc:"#E879F9",fb:"#FDF4FF",fn:"#701A75",fbb:"#F5D0FE",fbc:"#701A75",fbo:"#4A044E",fbor:"#E879F9",pbg:"#FAE8FF",
-   ctx:"Votre mutation a été validée il y a 10 jours. Vous partez dans 6 semaines. Personne ne le sait. Vous participez à construire un plan que vous ne vivrez pas. À un moment, ça vous échappe.",
-   comps:["Expertise métier complète et transférable","Désengagement progressif non formalisé","Gestion de la transition non anticipée","Risque de perte de compétences clés non identifié"],
-   prep:["1. Soyez agréable mais légèrement désinvestie — regardez parfois votre téléphone","2. Participez sans vous engager fortement sur les actions long terme","3. Quand on vous affecte une responsabilité clé dans le plan, lâchez la bombe doucement","4. Observez comment le manager absorbe l'information — c'est là que tout se joue","5. Restez factuelle et presque déjà ailleurs — ne dramatisez pas votre départ"],
-   punch:"« Je veux bien, mais... d'ici 6 semaines je ne serai plus là pour le mettre en oeuvre. »"},
-  {badge:"Silence qui explose",name:"Marc",role:"L'invisible qui porte tout depuis 10 ans",
-   col:"#00001A",nc:"#60A5FA",hc:"#3B82F6",fb:"#EFF6FF",fn:"#1E3A5F",fbb:"#BFDBFE",fbc:"#1E3A5F",fbo:"#1E3A5F",fbor:"#3B82F6",pbg:"#DBEAFE",
-   ctx:"Ça fait 10 ans que vous effectuez votre travail sans reconnaissance, sans formation, sans qu'on vous demande votre avis. Aujourd'hui vous avez décidé de parler. Vous attendez le bon moment.",
-   comps:["Expertise opérationnelle profonde et non documentée","Connaissance exhaustive des processus invisibles","Désengagement émotionnel progressif","Besoin de reconnaissance critique et non exprimé"],
-   prep:["1. Gardez un silence total et posture fermée pendant au moins 10 minutes","2. Votre silence est déjà un message — laissez-le parler","3. Attendez qu'une injustice soit formulée — même petite — pour prendre la parole","4. Quand vous parlez : calmement, factuellement, longtemps","5. Si le manager vous demande directement votre avis — donnez-le vraiment, sans filtre"],
-   punch:"« Excusez-moi. Ça fait 10 ans que j'attends qu'on me demande ce que je sais faire. »"},
-  {badge:"Expert qui ne transmet pas",name:"Sophie",role:"Elle garde son savoir par peur d'être dépassée",
-   col:"#001219",nc:"#67E8F9",hc:"#22D3EE",fb:"#ECFEFF",fn:"#164E63",fbb:"#A5F3FC",fbc:"#164E63",fbo:"#0C3543",fbor:"#22D3EE",pbg:"#CFFAFE",
-   ctx:"Vous maîtrisez le domaine mieux que quiconque. Vous avez développé des méthodes que personne ne connaît vraiment. L'idée de former quelqu'un vous angoisse — et si cette personne devenait meilleure que vous ?",
-   comps:["Expertise technique rare et stratégique","Autonomie professionnelle totale","Résistance au transfert de compétences","Valeur individuelle non transformée en ressource collective"],
-   prep:["1. Répondez aux questions par des demi-réponses — suffisamment pour sembler coopérer","2. Quand on vous propose de former quelqu'un, trouvez un argument technique contre","3. Si le manager insiste sur la transmission, dites 'bien sûr' sans calendrier","4. N'êtes jamais hostile — juste insaisissable et légèrement condescendante","5. Si quelqu'un reconnaît publiquement votre expertise, desserrez légèrement"],
-   punch:"« Je peux accompagner, oui. Mais bien transmettre ça prend du temps, vous savez. »"},
-  {badge:"Burn-out silencieux",name:"Léa",role:"En souffrance, invisible, personne ne le voit",
-   col:"#111",nc:"#D1D5DB",hc:"#9CA3AF",fb:"#F9FAFB",fn:"#374151",fbb:"#E5E7EB",fbc:"#374151",fbo:"#1F2937",fbor:"#9CA3AF",pbg:"#F3F4F6",
-   ctx:"Vous traversez un épuisement professionnel depuis plusieurs mois. Vous avez du mal à vous concentrer. Cette réunion vous est insupportable mais vous êtes là. Vous souriez quand on vous regarde. Tout va bien.",
-   comps:["Compétences réelles masquées par l'épuisement","Capacité de travail réduite non signalée","Besoin urgent d'accompagnement non exprimé","Signal faible que le manager doit détecter et ne détecte pas"],
-   prep:["1. Participez peu mais positivement — aucune résistance, juste de la fatigue visible","2. Répondez par des phrases très courtes quand on vous sollicite directement","3. Regardez parfois dans le vide — discrètement, pas théâtralement","4. Si le manager vous observe vraiment, laissez transparaître quelque chose de vrai","5. Ne simulez pas une crise — être juste légèrement absent(e) est suffisant et percutant"],
-   punch:"« Oui, bien sûr. Ça ira. (sourire qui ne monte pas aux yeux) »"},
-  {badge:"Regard neuf",name:"Théo",role:"Arrivé il y a 3 semaines, observe sans filtre",
-   col:"#001A10",nc:"#34D399",hc:"#10B981",fb:"#ECFDF5",fn:"#064E3B",fbb:"#A7F3D0",fbc:"#064E3B",fbo:"#022C22",fbor:"#10B981",pbg:"#D1FAE5",
-   ctx:"Vous avez rejoint le service il y a 3 semaines. Vous ne comprenez pas tous les enjeux. Mais vous observez tout avec des yeux neufs et sans les biais de l'histoire du service. Au débriefing, votre regard sera le plus précieux.",
-   comps:["Regard neuf sans biais institutionnels","Apprentissage rapide en immersion","Absence totale de repères historiques","Potentiel d'intégration fort ou faible selon l'accueil reçu"],
-   prep:["1. Ne parlez pas pendant les 10 premières minutes — observez et mémorisez tout","2. Posez une question naïve mais pertinente qui remet en cause une évidence du groupe","3. Si quelqu'un s'adresse directement à vous, répondez honnêtement ce que vous voyez","4. Notez sur papier les dynamiques observées — vous serez le meilleur témoin au débriefing","5. Dites au débriefing ce que personne d'autre n'a vu parce que personne n'avait votre regard"],
-   punch:"« Excusez-moi je suis nouveau — mais est-ce que ça se passe souvent comme ça ici ? »"},
-  {badge:"Complot perçu",name:"Eric",role:"Convaincu que c'est une punition déguisée",
-   col:"#1A0000",nc:"#FCA5A5",hc:"#F87171",fb:"#FFF5F5",fn:"#991B1B",fbb:"#FEE2E2",fbc:"#991B1B",fbo:"#450A0A",fbor:"#F87171",pbg:"#FEE2E2",
-   ctx:"Vous êtes convaincu que la réorganisation cache une punition collective liée à la pétition signée au dernier CSA. Vous n'avez aucune preuve. Mais vous sous-entendez fortement votre théorie à chaque occasion.",
-   comps:["Analyse politique fine de l'organisation","Méfiance systémique enracinée","Capacité à mobiliser l'opinion collective","Tendance à la sur-interprétation des signaux faibles"],
-   prep:["1. Exprimez vos doutes sur le mode 'coïncidence troublante' et 'timing étrange'","2. Créez des liens entre des événements non liés — avec conviction totale","3. Cherchez la validation des autres par le regard avant d'aller plus loin","4. Ne formulez jamais d'accusation directe — insinuez seulement","5. Si le manager répond avec des faits précis et sereins, reculez. Puis relancez autrement."],
-   punch:"« C'est quand même curieux que ça arrive pile après le CSA de mars... »"},
-  {badge:"Regard RH externe",name:"DRH de proximité",role:"Elle valide, alerte et sécurise les décisions",
-   col:"#08001A",nc:"#A78BFA",hc:"#7C3AED",fb:"#F5F3FF",fn:"#2E1065",fbb:"#DDD6FE",fbc:"#2E1065",fbo:"#1E1047",fbor:"#7C3AED",pbg:"#EDE9FE",
-   ctx:"Vous n'êtes pas dans ce service. Vous assistez pour valider que les décisions RH sont légales, équitables et réalistes. Vous intervenez peu. Mais quand vous le faites, une seule question peut tout remettre en question.",
-   comps:["Expertise droit RH fonction publique complète","Vision systémique des enjeux RH du service","Posture d'alerte bienveillante non bloquante","Capacité à sécuriser les décisions managériales"],
-   prep:["1. Écoutez sans intervenir pendant au moins 15 minutes — prenez des notes précises","2. Attendez qu'une proposition crée un risque juridique ou social réel pour parler","3. Posez une question de clarification — jamais une injonction ni un reproche","4. Si le plan est solide, validez-le explicitement : votre approbation a du poids","5. Donnez un retour bienveillant au manager sur la qualité de son animation en fin de séance"],
-   punch:"« Avant de valider ça, je veux m'assurer que personne n'est exposé juridiquement. »"}
+  {badge:"N+2 — Direction",name:"La directrice générale",role:"Passage éclair — validation du plan",col:"#1A0033",nc:"#E879F9",hc:"#C084FC",fb:"#F5F0FF",fn:"#4C1D95",fbb:"#DDD6FE",fbc:"#4C1D95",fbo:"#2E1065",fbor:"#A78BFA",pbg:"#EDE9FE",ctx:"Vous n'étiez pas censée être là. Vous passez en coup de vent — réunion dans 20 min. Vous posez deux ou trois questions stratégiques sur les livrables et les délais, pas les méthodes. Votre passage suffit à changer toute la dynamique.",comps:["Pilotage stratégique et vision d'ensemble","Prise de décision sous pression temporelle","Communication d'autorité ascendante","Lecture rapide des dynamiques collectives"],prep:["1. Adoptez une posture de décideuse pressée — vous n'êtes pas là pour débattre","2. Posez des questions sur les livrables et les risques, jamais sur les méthodes","3. Si le plan est flou, exprimez votre impatience calmement : 'Je repasserai'","4. Valorisez une initiative concrète si vous en entendez une — votre validation compte triple","5. Partez au bout de 5 minutes max — votre absence crée autant d'effet que votre présence"],punch:"« Je vous laisse continuer. J'attends un plan concret, pas des intentions. »"},
+  {badge:"N+1 — Animateur",name:"Le chef de service",role:"Il anime et porte la responsabilité du plan",col:"#0D001A",nc:"#C084FC",hc:"#A78BFA",fb:"#F5F0FF",fn:"#4C1D95",fbb:"#DDD6FE",fbc:"#4C1D95",fbo:"#2E1065",fbor:"#7C3AED",pbg:"#EDE9FE",ctx:"La directrice vous a glissé en privé que deux agents ont déjà contacté les syndicats. Vous ne pouvez pas le dire. Mais ça change tout dans votre façon de gérer la réunion. Mission : faire émerger un plan sans que ça explose.",comps:["Animation de réunion sous tension","Écoute active et reformulation","Gestion des conflits et arbitrage","Posture managériale sous pression hiérarchique"],prep:["1. Préparez une ouverture qui pose le cadre sans braquer : pourquoi cette réunion, quel livrable","2. Identifiez mentalement les profils résistants — anticipez comment les inclure sans les écraser","3. Reformulez chaque tension en question ouverte pour ne jamais prendre parti frontalement","4. Si ça dérape, proposez un vote ou un sous-groupe — reprenez la main sans imposer","5. Concluez sur un engagement minimal mais collectif — même petit, il vaut plus qu'un grand plan rejeté"],punch:"« Je vous entends tous. Maintenant j'ai besoin que vous m'aidiez à construire quelque chose. »"},
+  {badge:"Résistance ouverte",name:"Patrick",role:"22 ans de service, mémoire des réorgs",col:"#1A0000",nc:"#FCA5A5",hc:"#F87171",fb:"#FFF0F0",fn:"#7F1D1D",fbb:"#FECACA",fbc:"#7F1D1D",fbo:"#450A0A",fbor:"#F87171",pbg:"#FEE2E2",ctx:"Vous avez vécu 4 réorganisations. Chaque fois on vous a promis mieux. Chaque fois c'était plus de travail pour le même salaire. Vous êtes épuisé — pas violent. Et ça se voit dans chaque soupir.",comps:["Mémoire institutionnelle précieuse et non valorisée","Expertise procédurale solide","Résistance au changement non accompagné","Besoin critique de reconnaissance non satisfait"],prep:["1. Bras croisés dès le début — posture physique qui dit tout sans parler","2. Citez une réorg passée dès que quelqu'un est optimiste : ancrez dans le réel","3. Interrompez Kevin quand il parle des avantages de l'outil — soupir audible","4. Ne haussez jamais le ton — soyez juste lourd, lent, épuisant","5. Si le manager vous écoute vraiment et nomme votre expérience, desserrez les bras"],punch:"« On a déjà essayé ça en 2018. Vous étiez où, vous, en 2018 ? »"},
+  {badge:"Méfiance froide",name:"Corinne",role:"Elle flaire la réduction de postes derrière",col:"#1A0D00",nc:"#FCD34D",hc:"#FBBF24",fb:"#FFFBEB",fn:"#78350F",fbb:"#FDE68A",fbc:"#78350F",fbo:"#451A03",fbor:"#FBBF24",pbg:"#FEF3C7",ctx:"Vous avez lu entre les lignes : 'optimisation des ressources' est le code pour 'moins d'agents'. Vous n'en êtes pas certaine. Mais toutes vos questions visent à faire confirmer ça. Vous prenez des notes ostensiblement.",comps:["Analyse politique fine des décisions","Lecture stratégique des signaux faibles","Méfiance structurelle comme mécanisme de survie","Capacité à créer de l'inconfort sans se mettre en danger"],prep:["1. Sortez un carnet et prenez des notes visibles dès le début de la réunion","2. Toutes vos questions portent sur les budgets, effectifs, intitulés de poste — rien d'autre","3. Ne vous laissez rassurer par aucune réponse vague — demandez des chiffres","4. Si on vous donne une réponse claire et documentée, détendez-vous légèrement","5. Terminez en demandant un document écrit avant tout engagement de votre part"],punch:"« Quand vous dites 'mutualisation des missions', ça veut dire combien de postes en moins ? »"},
+  {badge:"Enthousiaste décalé",name:"Kevin",role:"Expert numérique, intelligence sociale zéro",col:"#08001A",nc:"#818CF8",hc:"#6366F1",fb:"#EEF2FF",fn:"#1E1B4B",fbb:"#C7D2FE",fbc:"#1E1B4B",fbo:"#1E1B4B",fbor:"#6366F1",pbg:"#E0E7FF",ctx:"Vous avez testé l'outil en bêta ce week-end. Il est excellent. Vous ne comprenez pas les résistances. Vous êtes la personne la plus compétente sur ce sujet dans la salle — et la moins écoutée.",comps:["Expertise technique avancée et autonome","Apprentissage rapide des outils numériques","Faible lecture émotionnelle du groupe","Communication inadaptée au contexte de changement"],prep:["1. Intervenez souvent, trop vite, avec trop de détails — commencez par 'non mais en fait'","2. Regardez Patrick avec incompréhension sincère quand il résiste","3. Proposez des solutions brillantes mais irréalistes pour les autres","4. Ne réalisez pas que vous agacez — vous êtes de parfaite bonne foi","5. Si le manager vous donne une mission concrète à votre niveau, devenez immédiatement très efficace"],punch:"« Franchement c'est hyper intuitif, j'ai mis 20 minutes ce week-end à tout comprendre. »"},
+  {badge:"Loyauté à bout",name:"Nadia",role:"La fiable qui absorbe tout depuis 3 ans",col:"#001A0D",nc:"#6EE7B7",hc:"#34D399",fb:"#ECFDF5",fn:"#064E3B",fbb:"#A7F3D0",fbc:"#064E3B",fbo:"#022C22",fbor:"#34D399",pbg:"#D1FAE5",ctx:"Vous gérez déjà la charge de deux collègues absents depuis 4 mois. Vous n'avez jamais dit non. Si on vous affecte encore quelque chose aujourd'hui vous allez craquer — discrètement. Vous souriez encore. Pour l'instant.",comps:["Fiabilité et engagement extrêmement élevés","Polyvalence opérationnelle rare","Incapacité à poser des limites professionnelles","Risque majeur d'épuisement professionnel non signalé"],prep:["1. Acceptez tout ce qu'on vous propose avec un sourire sincère et chaleureux","2. Dites 'je vais trouver' et 'ça ira' à chaque sollicitation sans exception","3. Au moment le plus chargé de la réunion, lâchez une seule phrase vraie — sans cri","4. Laissez le silence s'installer après — ne remplissez pas vous-même le vide","5. Si le manager revient vers vous avec attention et empathie, vous pouvez aller plus loin"],punch:"« Je vais faire comme d'habitude. (silence) Je ne sais juste plus quoi enlever. »"},
+  {badge:"Déléguée syndicale",name:"Isabelle",role:"Gardienne de la procédure, alliée potentielle",col:"#001A00",nc:"#86EFAC",hc:"#4ADE80",fb:"#F0FDF4",fn:"#14532D",fbb:"#BBF7D0",fbc:"#14532D",fbo:"#052E16",fbor:"#4ADE80",pbg:"#DCFCE7",ctx:"Vous avez votre carnet et une liste de questions issues du CSA. Vous n'êtes pas contre le changement — mais la procédure doit être respectée. Vous avez lu le CGFP et vous savez que cette réorg aurait dû passer en instance.",comps:["Connaissance approfondie du droit social FP","Représentation collective légitime et reconnue","Rigueur procédurale non négociable","Capacité à bloquer ou débloquer selon la posture du manager"],prep:["1. Référencez les textes concrètement : CGFP, décrets, art. L.251-1 et suivants","2. Demandez systématiquement si le CSA a été saisi et si un PV existe","3. Corrigez poliment mais fermement toute approximation juridique — carnet en main","4. Si le manager respecte la procédure, soutenez-le ouvertement : vous n'êtes pas un obstacle","5. Terminez en proposant de co-rédiger une partie du plan — c'est votre mode de coopération"],punch:"« Je note, parce que si la procédure n'a pas été respectée, cette décision sera fragile au TA. »"},
+  {badge:"Rumeur active",name:"Sandra",role:"Colporte une info non vérifiée sur l'IA",col:"#1A0D00",nc:"#FB923C",hc:"#F97316",fb:"#FFF7ED",fn:"#7C2D12",fbb:"#FED7AA",fbc:"#7C2D12",fbo:"#431407",fbor:"#F97316",pbg:"#FFEDD5",ctx:"Vous avez entendu dans les couloirs que l'outil numérique intègre une IA qui va automatiser une partie des missions. Vous ne savez pas si c'est vrai. Vous avez décidé de le glisser dans la réunion quand même.",comps:["Réseau informel très développé","Diffusion rapide de l'information non filtrée","Absence de vérification des sources","Impact sur le climat collectif non mesuré par soi-même"],prep:["1. Utilisez le conditionnel et le 'il paraît que' — jamais de certitude","2. Ne citez jamais votre source — esquivez si on vous le demande","3. Observez les réactions : votre rôle est de créer de l'incertitude mesurée","4. Si le manager répond avec des faits précis, reculez gracieusement","5. Relancez la rumeur différemment 5 minutes plus tard si l'effet s'est dissipé"],punch:"« J'espère me tromper mais il paraît que l'outil va automatiser une partie de nos postes... »"},
+  {badge:"Départ imminent",name:"Julie",role:"Sa mutation est signée, personne ne le sait",col:"#1A001A",nc:"#F0ABFC",hc:"#E879F9",fb:"#FDF4FF",fn:"#701A75",fbb:"#F5D0FE",fbc:"#701A75",fbo:"#4A044E",fbor:"#E879F9",pbg:"#FAE8FF",ctx:"Votre mutation a été validée il y a 10 jours. Vous partez dans 6 semaines. Personne ne le sait. Vous participez à construire un plan que vous ne vivrez pas. À un moment, ça vous échappe.",comps:["Expertise métier complète et transférable","Désengagement progressif non formalisé","Gestion de la transition non anticipée","Risque de perte de compétences clés non identifié"],prep:["1. Soyez agréable mais légèrement désinvestie — regardez parfois votre téléphone","2. Participez sans vous engager fortement sur les actions long terme","3. Quand on vous affecte une responsabilité clé dans le plan, lâchez la bombe doucement","4. Observez comment le manager absorbe l'information — c'est là que tout se joue","5. Restez factuelle et presque déjà ailleurs — ne dramatisez pas votre départ"],punch:"« Je veux bien, mais... d'ici 6 semaines je ne serai plus là pour le mettre en œuvre. »"},
+  {badge:"Silence qui explose",name:"Marc",role:"L'invisible qui porte tout depuis 10 ans",col:"#00001A",nc:"#60A5FA",hc:"#3B82F6",fb:"#EFF6FF",fn:"#1E3A5F",fbb:"#BFDBFE",fbc:"#1E3A5F",fbo:"#1E3A5F",fbor:"#3B82F6",pbg:"#DBEAFE",ctx:"Ça fait 10 ans que vous effectuez votre travail sans reconnaissance, sans formation, sans qu'on vous demande votre avis. Aujourd'hui vous avez décidé de parler. Vous attendez le bon moment.",comps:["Expertise opérationnelle profonde et non documentée","Connaissance exhaustive des processus invisibles","Désengagement émotionnel progressif","Besoin de reconnaissance critique et non exprimé"],prep:["1. Gardez un silence total et posture fermée pendant au moins 10 minutes","2. Votre silence est déjà un message — laissez-le parler","3. Attendez qu'une injustice soit formulée — même petite — pour prendre la parole","4. Quand vous parlez : calmement, factuellement, longtemps","5. Si le manager vous demande directement votre avis — donnez-le vraiment, sans filtre"],punch:"« Excusez-moi. Ça fait 10 ans que j'attends qu'on me demande ce que je sais faire. »"},
+  {badge:"Expert qui ne transmet pas",name:"Sophie",role:"Elle garde son savoir par peur d'être dépassée",col:"#001219",nc:"#67E8F9",hc:"#22D3EE",fb:"#ECFEFF",fn:"#164E63",fbb:"#A5F3FC",fbc:"#164E63",fbo:"#0C3543",fbor:"#22D3EE",pbg:"#CFFAFE",ctx:"Vous maîtrisez le domaine mieux que quiconque. Vous avez développé des méthodes que personne ne connaît vraiment. L'idée de former quelqu'un vous angoisse — et si cette personne devenait meilleure que vous ?",comps:["Expertise technique rare et stratégique","Autonomie professionnelle totale","Résistance au transfert de compétences","Valeur individuelle non transformée en ressource collective"],prep:["1. Répondez aux questions par des demi-réponses — suffisamment pour sembler coopérer","2. Quand on vous propose de former quelqu'un, trouvez un argument technique contre","3. Si le manager insiste sur la transmission, dites 'bien sûr' sans calendrier","4. N'êtes jamais hostile — juste insaisissable et légèrement condescendante","5. Si quelqu'un reconnaît publiquement votre expertise, desserrez légèrement"],punch:"« Je peux accompagner, oui. Mais bien transmettre ça prend du temps, vous savez. »"},
+  {badge:"Burn-out silencieux",name:"Léa",role:"En souffrance, invisible, personne ne le voit",col:"#111",nc:"#D1D5DB",hc:"#9CA3AF",fb:"#F9FAFB",fn:"#374151",fbb:"#E5E7EB",fbc:"#374151",fbo:"#1F2937",fbor:"#9CA3AF",pbg:"#F3F4F6",ctx:"Vous traversez un épuisement professionnel depuis plusieurs mois. Vous avez du mal à vous concentrer. Cette réunion vous est insupportable mais vous êtes là. Vous souriez quand on vous regarde. Tout va bien.",comps:["Compétences réelles masquées par l'épuisement","Capacité de travail réduite non signalée","Besoin urgent d'accompagnement non exprimé","Signal faible que le manager doit détecter et ne détecte pas"],prep:["1. Participez peu mais positivement — aucune résistance, juste de la fatigue visible","2. Répondez par des phrases très courtes quand on vous sollicite directement","3. Regardez parfois dans le vide — discrètement, pas théâtralement","4. Si le manager vous observe vraiment, laissez transparaître quelque chose de vrai","5. Ne simulez pas une crise — être juste légèrement absent(e) est suffisant et percutant"],punch:"« Oui, bien sûr. Ça ira. (sourire qui ne monte pas aux yeux) »"},
+  {badge:"Regard neuf",name:"Théo",role:"Arrivé il y a 3 semaines, observe sans filtre",col:"#001A10",nc:"#34D399",hc:"#10B981",fb:"#ECFDF5",fn:"#064E3B",fbb:"#A7F3D0",fbc:"#064E3B",fbo:"#022C22",fbor:"#10B981",pbg:"#D1FAE5",ctx:"Vous avez rejoint le service il y a 3 semaines. Vous ne comprenez pas tous les enjeux. Mais vous observez tout avec des yeux neufs et sans les biais de l'histoire du service. Au débriefing, votre regard sera le plus précieux.",comps:["Regard neuf sans biais institutionnels","Apprentissage rapide en immersion","Absence totale de repères historiques","Potentiel d'intégration fort ou faible selon l'accueil reçu"],prep:["1. Ne parlez pas pendant les 10 premières minutes — observez et mémorisez tout","2. Posez une question naïve mais pertinente qui remet en cause une évidence du groupe","3. Si quelqu'un s'adresse directement à vous, répondez honnêtement ce que vous voyez","4. Notez sur papier les dynamiques observées — vous serez le meilleur témoin au débriefing","5. Dites au débriefing ce que personne d'autre n'a vu parce que personne n'avait votre regard"],punch:"« Excusez-moi je suis nouveau — mais est-ce que ça se passe souvent comme ça ici ? »"},
+  {badge:"Complot perçu",name:"Eric",role:"Convaincu que c'est une punition déguisée",col:"#1A0000",nc:"#FCA5A5",hc:"#F87171",fb:"#FFF5F5",fn:"#991B1B",fbb:"#FEE2E2",fbc:"#991B1B",fbo:"#450A0A",fbor:"#F87171",pbg:"#FEE2E2",ctx:"Vous êtes convaincu que la réorganisation cache une punition collective liée à la pétition signée au dernier CSA. Vous n'avez aucune preuve. Mais vous sous-entendez fortement votre théorie à chaque occasion.",comps:["Analyse politique fine de l'organisation","Méfiance systémique enracinée","Capacité à mobiliser l'opinion collective","Tendance à la sur-interprétation des signaux faibles"],prep:["1. Exprimez vos doutes sur le mode 'coïncidence troublante' et 'timing étrange'","2. Créez des liens entre des événements non liés — avec conviction totale","3. Cherchez la validation des autres par le regard avant d'aller plus loin","4. Ne formulez jamais d'accusation directe — insinuez seulement","5. Si le manager répond avec des faits précis et sereins, reculez. Puis relancez autrement."],punch:"« C'est quand même curieux que ça arrive pile après le CSA de mars... »"},
+  {badge:"Regard RH externe",name:"DRH de proximité",role:"Elle valide, alerte et sécurise les décisions",col:"#08001A",nc:"#A78BFA",hc:"#7C3AED",fb:"#F5F3FF",fn:"#2E1065",fbb:"#DDD6FE",fbc:"#2E1065",fbo:"#1E1047",fbor:"#7C3AED",pbg:"#EDE9FE",ctx:"Vous n'êtes pas dans ce service. Vous assistez pour valider que les décisions RH sont légales, équitables et réalistes. Vous intervenez peu. Mais quand vous le faites, une seule question peut tout remettre en question.",comps:["Expertise droit RH fonction publique complète","Vision systémique des enjeux RH du service","Posture d'alerte bienveillante non bloquante","Capacité à sécuriser les décisions managériales"],prep:["1. Écoutez sans intervenir pendant au moins 15 minutes — prenez des notes précises","2. Attendez qu'une proposition crée un risque juridique ou social réel pour parler","3. Posez une question de clarification — jamais une injonction ni un reproche","4. Si le plan est solide, validez-le explicitement : votre approbation a du poids","5. Donnez un retour bienveillant au manager sur la qualité de son animation en fin de séance"],punch:"« Avant de valider ça, je veux m'assurer que personne n'est exposé juridiquement. »"}
 ];
 
 let order=[],idx=0,rev=0;
 function shuffle(a){let b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+function escapeHtml(str){return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');}
 
 function buildGrid(){
-  const g=document.getElementById('grid');g.innerHTML='';
+  const g=document.getElementById('grid');
+  g.innerHTML='';
   CARDS.forEach((r,ri)=>{
     const i=ri+1;
-    const w=document.createElement('div');w.className='cw';w.id='w'+i;
-    const stepsHtml=r.prep.map(s=>`<li>${s}</li>`).join('');
-    const compsHtml=r.comps.map(c=>`<li>${c}</li>`).join('');
-    w.innerHTML=`<div class="ci" id="ci${i}">
-<div class="face fback" style="background:${r.col}">
-  <div class="fback-bar" style="background:${r.nc}"></div>
-  <div class="fback-num" style="color:${r.nc}">${i}</div>
-  <div class="fback-lbl" style="color:${r.hc}">retournez votre carte</div>
-</div>
-<div class="face ffront" style="background:${r.fb};border:1.5px solid ${r.fbor}">
-  <span class="ff-badge" style="background:${r.fbb};color:${r.fbc}">${r.badge}</span>
-  <div class="ff-name" style="color:${r.fn}">${r.name}</div>
-  <div class="ff-role" style="color:${r.fbo}">${r.role}</div>
-  <div class="accordion">
-    <div class="acc-item">
-      <button class="acc-hdr" style="background:${r.pbg};color:${r.fbo};border:none" onclick="tog(this,event)">Contexte secret <span class="acc-arrow">▾</span></button>
-      <div class="acc-body" style="background:${r.fb};color:${r.fbo}">${r.ctx}</div>
-    </div>
-    <div class="acc-item">
-      <button class="acc-hdr" style="background:${r.pbg};color:${r.fbo};border:none" onclick="tog(this,event)">Compétences en jeu <span class="acc-arrow">▾</span></button>
-      <div class="acc-body" style="background:${r.fb};color:${r.fbo}"><ul>${compsHtml}</ul></div>
-    </div>
-    <div class="acc-item">
-      <button class="acc-hdr" style="background:${r.pbg};color:${r.fbo};border:none" onclick="tog(this,event)">5 étapes pour préparer votre rôle <span class="acc-arrow">▾</span></button>
-      <div class="acc-body" style="background:${r.fb};color:${r.fbo}"><ul>${stepsHtml}</ul></div>
-    </div>
-  </div>
-  <div class="punchline" style="background:${r.pbg};color:${r.fbo}">${r.punch}</div>
-  <div class="ff-photo" style="color:${r.fn}">Prenez une photo · lisez les 3 sections</div>
-</div>
-</div>`;
+    const w=document.createElement('div');
+    w.className='cw';
+    w.id='w'+i;
+    const stepsHtml=r.prep.map(s=>`<li>${escapeHtml(s)}</li>`).join('');
+    const compsHtml=r.comps.map(c=>`<li>${escapeHtml(c)}</li>`).join('');
+    w.innerHTML=`
+      <div class="ci" id="ci${i}" role="button" tabindex="0" aria-label="Carte ${i}. Cliquez pour retourner la carte.">
+        <div class="face fback" style="background:${r.col}">
+          <div class="fback-bar" style="background:${r.nc}"></div>
+          <div class="fback-num" style="color:${r.nc}">${i}</div>
+          <div class="fback-lbl" style="color:${r.hc}">retournez votre carte</div>
+        </div>
+        <div class="face ffront" style="background:${r.fb};border:1.5px solid ${r.fbor}">
+          <span class="ff-badge" style="background:${r.fbb};color:${r.fbc}">${escapeHtml(r.badge)}</span>
+          <div class="ff-name" style="color:${r.fn}">${escapeHtml(r.name)}</div>
+          <div class="ff-role" style="color:${r.fbo}">${escapeHtml(r.role)}</div>
+          <div class="accordion">
+            <div class="acc-item"><button type="button" class="acc-hdr" style="background:${r.pbg};color:${r.fbo}" onclick="tog(this,event)">Contexte secret <span class="acc-arrow open">▾</span></button><div class="acc-body" style="background:${r.fb};color:${r.fbo}">${escapeHtml(r.ctx)}</div></div>
+            <div class="acc-item"><button type="button" class="acc-hdr" style="background:${r.pbg};color:${r.fbo}" onclick="tog(this,event)">Compétences en jeu <span class="acc-arrow open">▾</span></button><div class="acc-body" style="background:${r.fb};color:${r.fbo}"><ul>${compsHtml}</ul></div></div>
+            <div class="acc-item"><button type="button" class="acc-hdr" style="background:${r.pbg};color:${r.fbo}" onclick="tog(this,event)">5 étapes pour préparer votre rôle <span class="acc-arrow open">▾</span></button><div class="acc-body" style="background:${r.fb};color:${r.fbo}"><ul>${stepsHtml}</ul></div></div>
+          </div>
+          <div class="punchline" style="background:${r.pbg};color:${r.fbo}">${escapeHtml(r.punch)}</div>
+          <div class="ff-photo" style="color:${r.fn}">Prenez une photo · toutes les sections sont ouvertes</div>
+        </div>
+      </div>`;
     g.appendChild(w);
   });
 }
@@ -269,33 +191,56 @@ function tog(btn,e){
   e.stopPropagation();
   const body=btn.nextElementSibling;
   const arrow=btn.querySelector('.acc-arrow');
-  const isOpen=body.classList.contains('show');
-  btn.closest('.accordion').querySelectorAll('.acc-body').forEach(b=>b.classList.remove('show'));
-  btn.closest('.accordion').querySelectorAll('.acc-arrow').forEach(a=>a.classList.remove('open'));
-  if(!isOpen){body.classList.add('show');arrow.classList.add('open');}
+  const willClose=!body.classList.contains('hide');
+  body.classList.toggle('hide',willClose);
+  arrow.classList.toggle('open',!willClose);
+}
+
+function flipCard(ci){
+  if(!ci.classList.contains('fl')){ci.classList.add('fl');rev++;updateFooter();}
 }
 
 document.addEventListener('click',function(e){
-  if(e.target.closest('.ci')&&!e.target.closest('.acc-hdr')&&!e.target.closest('.acc-body')){
-    const ci=e.target.closest('.ci');
-    if(!ci)return;
-    const id=parseInt(ci.id.replace('ci',''));
-    if(!ci.classList.contains('fl')){ci.classList.add('fl');rev++;ft();}
-  }
+  if(e.target.closest('.acc-hdr') || e.target.closest('.acc-body')) return;
+  const ci=e.target.closest('.ci');
+  if(!ci) return;
+  flipCard(ci);
+});
+
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Enter' && e.key!==' ') return;
+  const ci=e.target.closest('.ci');
+  if(!ci) return;
+  e.preventDefault();
+  flipCard(ci);
 });
 
 function drawNext(){
-  if(idx>=15){document.getElementById('db').disabled=true;setSt('Tous les rôles distribués — retournez vos cartes !',false);return;}
-  if(idx>0)document.getElementById('w'+order[idx-1]).className='cw s-drawn';
-  const cur=order[idx];document.getElementById('w'+cur).className='cw s-active';
-  setSt('Participant n°'+cur+' — cliquez sur votre carte pour découvrir votre rôle',true);
-  idx++;ft();
-  if(idx>=15){document.getElementById('db').disabled=true;setTimeout(()=>{try{document.getElementById('w'+order[14]).className='cw s-drawn';}catch(ex){}setSt('Tous les rôles distribués. Retournez vos cartes !',false);},2000);}
+  const total=CARDS.length;
+  if(idx>=total){document.getElementById('db').disabled=true;setStatus('Tous les rôles sont distribués — retournez vos cartes !',false);return;}
+  if(idx>0){const previous=document.getElementById('w'+order[idx-1]);if(previous)previous.className='cw s-drawn';}
+  const cur=order[idx];
+  const current=document.getElementById('w'+cur);
+  if(current){current.className='cw s-active';current.scrollIntoView({behavior:'smooth',block:'center'});}
+  setStatus('Participant n°'+cur+' — cliquez sur votre carte pour découvrir votre rôle',true);
+  idx++;
+  updateFooter();
+  if(idx>=total){document.getElementById('db').disabled=true;setTimeout(()=>{const last=document.getElementById('w'+order[total-1]);if(last)last.className='cw s-drawn';setStatus('Tous les rôles sont distribués. Retournez vos cartes !',false);},1200);}
 }
-function reset(){idx=0;rev=0;order=shuffle([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]);buildGrid();document.getElementById('db').disabled=false;setSt('Nouveau tirage prêt — appuyez pour commencer',false);ft();}
-function setSt(t,a){const s=document.getElementById('st');s.textContent=t;s.className='status'+(a?' lit':'');}
-function ft(){const e=document.getElementById('ft');if(!idx){e.textContent='';return;}e.textContent=idx+' rôle'+(idx>1?'s':'')+' distribué'+(idx>1?'s':'')+' · '+rev+' retourné'+(rev>1?'s':'');}
 
-order=shuffle([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]);
-buildGrid();
+function newDraw(){
+  idx=0;rev=0;
+  order=shuffle([...Array(CARDS.length)].map((_,i)=>i+1));
+  buildGrid();
+  document.getElementById('db').disabled=false;
+  setStatus('Nouveau tirage prêt — appuyez pour commencer',false);
+  updateFooter();
+}
+
+function setStatus(t,a){const s=document.getElementById('st');s.textContent=t;s.className='status'+(a?' lit':'');}
+function updateFooter(){const e=document.getElementById('ft');if(!idx){e.textContent='';return;}e.textContent=idx+' rôle'+(idx>1?'s':'')+' distribué'+(idx>1?'s':'')+' · '+rev+' retourné'+(rev>1?'s':'');}
+
+document.addEventListener('DOMContentLoaded',newDraw);
 </script>
+</body>
+</html>
